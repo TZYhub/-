@@ -15,6 +15,14 @@ typedef struct Nature
 	ChoiceValue choiceValue;	//用来确认此性质精选时取大值还是取小值
 }SNature;
 
+
+#define ID_USER 40000//定义用户自己使用的ID
+#define ID_COMPO_START ID_USER		//组成菜单的ID范围为40000-42000
+#define ID_COMPO_END ID_USER+2000
+
+#define ID_NATURE_START ID_USER+2001		//性质菜单的ID范围为42001-44000
+#define ID_NATURE_END ID_USER+4000
+
 // CCompositionOptimizationDlg 对话框
 class CCompositionOptimizationDlg : public CDialogEx
 {
@@ -60,7 +68,11 @@ protected:
 
 	int m_row;
 	int m_column;
-	bool m_bIsFirstInit;								//是否为最开始的初始化，如果不是则不再初始化combo
+	bool m_bIsFirstInit;							//是否为最开始的初始化，如果不是则不再初始化combo
+	CMenu m_CompositionMenu;						//物质组成菜单
+	CMenu m_NatureMenu;								//性质菜单
+	int m_DeleteCompID;
+	int m_DeleteNatureID;
 
 	void Init();									//所有初始化
 	void LoadComposition();							//导入需要计算的组成物质到列表中
@@ -72,12 +84,13 @@ protected:
 	void InitResultList();							//初始化结果列表
 	void InitCombo();								//初始化复选框
 	void InitCalcRatioList();						//初始化计算系数列表
+	void LoadStrFromIni(vector<CString> &vtStr,CString keyStr);	//从配置文件中获取字符串数据
+	void InitMenu();								//初始化弹出菜单
 	void Test();									//加载测试数据
 	void Clear();									//清空数据
 	void RebuildList();								//添加或删减数据后，重新生成列表
 	void RebuildCompositionList();
 	void RebuildNatureList();
-	void RebuildCalcRatioList();
 	void RebuildResultList();
 	void AutoSizeListColumn(CListCtrl &clist,int column);//自动调节列表宽度 
 
@@ -109,6 +122,7 @@ public:
 	CListCtrl m_CalcRatioList;//计算系数列表
 	CEdit m_inputComEdit;
 	CEdit m_inputNatureEdit;
+	CEdit m_calcRatioEdit;
 	CListCtrl m_ResultList;
 	CComboBox m_combo;//选择取大值还是取小值
 
@@ -118,29 +132,19 @@ public:
 	afx_msg void OnEnKillfocusEdit1();						//添加组成范围编辑框焦点消失后
 	afx_msg void OnEnKillfocusEdit2();						//添加性质范围编辑框焦点消失后
 	afx_msg void OnCbnKillfocusCombo1();					//取大值和小值的combo焦点消失后
-	afx_msg void OnEnKillfocusEditComrclick();				//添加组成编辑框焦点消失后响应函数
-	afx_msg void OnEnKillfocusEditNaturerclick();			//添加性质编辑框焦点消失后响应函数
 
 	afx_msg void OnBnClickedBtnStartopt();					//开始优选按钮响应函数
-	
+
 	afx_msg void OnBnClickedBtnTest();						//加载测试按钮响应函数
 	afx_msg void OnBnClickedBtnClear();						//清除列表界面按钮响应函数
 	
 	afx_msg void OnNMRClickListComposition(NMHDR *pNMHDR, LRESULT *pResult);//右键组成列表响应函数
 	afx_msg void OnNMRClickListNature(NMHDR *pNMHDR, LRESULT *pResult);		//右键性质列表响应函数
-//	afx_msg void OnAddcomposition();						//添加组成响应函数
-	afx_msg void OnDeleteConposition();						//删除组成响应函数
-//	afx_msg void OnAddNature();								//添加性质响应函数
-	afx_msg void OnDeleteNature();							//删除性质响应函数
-	CEdit m_comRClickEdit;
-	CEdit m_natureRClickEdit;
 	
-	CEdit m_calcRatioEdit;
+	
 	afx_msg void OnNMDblclkListCalcratio(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnEnKillfocusEditCalcrtio();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	afx_msg void OnAddSio2();
-	afx_msg void OnAddAl2o3();
-	afx_msg void OnAddNa2o();
-	afx_msg void OnAddCao();
+	afx_msg void OnAddComposition(UINT nID);				//添加或删除组成
+	afx_msg void OnAddNature(UINT nID);						//添加或删除性质
 };

@@ -65,8 +65,6 @@ void CCompositionOptimizationDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST_RESULT, m_ResultList);
 	DDX_Control(pDX, IDC_COMBO1, m_combo);
 	DDX_Control(pDX, IDC_LIST_CALCRATIO, m_CalcRatioList);
-	DDX_Control(pDX, IDC_EDIT_COMRClick, m_comRClickEdit);
-	DDX_Control(pDX, IDC_EDIT_NatureRClick, m_natureRClickEdit);
 	DDX_Control(pDX, IDC_EDIT_CALCRTIO, m_calcRatioEdit);
 }
 
@@ -85,18 +83,10 @@ BEGIN_MESSAGE_MAP(CCompositionOptimizationDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_CLEAR, &CCompositionOptimizationDlg::OnBnClickedBtnClear)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST_COMPOSITION, &CCompositionOptimizationDlg::OnNMRClickListComposition)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST_NATURE, &CCompositionOptimizationDlg::OnNMRClickListNature)
-	//ON_COMMAND(ID_AddComposition, &CCompositionOptimizationDlg::OnAddcomposition)
-	ON_COMMAND(ID__DeleteComposition, &CCompositionOptimizationDlg::OnDeleteConposition)
-	//ON_COMMAND(ID__AddNature, &CCompositionOptimizationDlg::OnAddNature)
-	ON_COMMAND(ID__DeleteNature, &CCompositionOptimizationDlg::OnDeleteNature)
-	ON_EN_KILLFOCUS(IDC_EDIT_COMRClick, &CCompositionOptimizationDlg::OnEnKillfocusEditComrclick)
-	ON_EN_KILLFOCUS(IDC_EDIT_NatureRClick, &CCompositionOptimizationDlg::OnEnKillfocusEditNaturerclick)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_CALCRATIO, &CCompositionOptimizationDlg::OnNMDblclkListCalcratio)
 	ON_EN_KILLFOCUS(IDC_EDIT_CALCRTIO, &CCompositionOptimizationDlg::OnEnKillfocusEditCalcrtio)
-	ON_COMMAND(ID_SIO2, &CCompositionOptimizationDlg::OnAddSio2)
-	ON_COMMAND(ID_AL2O3, &CCompositionOptimizationDlg::OnAddAl2o3)
-	ON_COMMAND(ID_NA2O, &CCompositionOptimizationDlg::OnAddNa2o)
-	ON_COMMAND(ID_CAO, &CCompositionOptimizationDlg::OnAddCao)
+	ON_COMMAND_RANGE(ID_COMPO_START,ID_COMPO_END,&CCompositionOptimizationDlg::OnAddComposition)
+	ON_COMMAND_RANGE(ID_NATURE_START,ID_NATURE_END,&CCompositionOptimizationDlg::OnAddNature)
 END_MESSAGE_MAP()
 
 
@@ -134,8 +124,10 @@ BOOL CCompositionOptimizationDlg::OnInitDialog()
 	// TODO: 在此添加额外的初始化代码
 	//初始化
 	Init();
+	InitMenu();
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
+
 
 void CCompositionOptimizationDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
@@ -186,6 +178,7 @@ HCURSOR CCompositionOptimizationDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
 void CCompositionOptimizationDlg::Init()
 {	
 	InitCompositionList();
@@ -194,7 +187,9 @@ void CCompositionOptimizationDlg::Init()
 	InitCombo();
 	InitCalcRatioList();
 	LoadCalcRatio();
+	
 }
+
 
 void CCompositionOptimizationDlg::LoadComposition()
 {
@@ -211,6 +206,7 @@ void CCompositionOptimizationDlg::LoadComposition()
 	m_compositionNumber=m_vtComposition.size();
 }
 
+
 void CCompositionOptimizationDlg::LoadNature()
 {
 	CString str;
@@ -222,10 +218,12 @@ void CCompositionOptimizationDlg::LoadNature()
 	m_natureNumber=m_vtNature.size();
 }
 
+
 void CCompositionOptimizationDlg::LoadResult()
 {
 
 }
+
 
 void CCompositionOptimizationDlg::LoadCalcRatio()
 {
@@ -258,15 +256,9 @@ void CCompositionOptimizationDlg::LoadCalcRatio()
 	m_CalcRatioList.SetItemText(1,2,_T("1.52"));
 	m_CalcRatioList.SetItemText(1,3,_T("1.73"));
 	m_CalcRatioList.SetItemText(1,4,_T("1.59"));
-
-	/*UINT mapSize=m_mapAllNature.size();
-	for (UINT i=0;i<mapSize;i++)
-	{
-
-	m_CalcRatioList.SetItemText(0,i,_T("35.0"));
-	}*/
 	
 }
+
 
 void CCompositionOptimizationDlg::InitCompositionList()
 {
@@ -312,6 +304,7 @@ void CCompositionOptimizationDlg::InitCompositionList()
 	m_compositionNumber=m_vtComposition.size();
 }
 
+
 void CCompositionOptimizationDlg::InitNatureList()
 {
 	//先删除所有行和所有列，再加载
@@ -354,6 +347,7 @@ void CCompositionOptimizationDlg::InitNatureList()
 
 	m_natureNumber=m_vtNature.size();
 }
+
 
 void CCompositionOptimizationDlg::InitResultList()
 {
@@ -411,6 +405,7 @@ void CCompositionOptimizationDlg::InitCombo()
 	
 }
 
+
 void CCompositionOptimizationDlg::InitCalcRatioList()
 {
 	//删除行和列
@@ -457,6 +452,118 @@ void CCompositionOptimizationDlg::InitCalcRatioList()
 	//AutoSizeListColumn(m_CalcRatioList,0);
 }
 
+
+void CCompositionOptimizationDlg::LoadStrFromIni(vector<CString> &vtStr,CString keyStr)
+{
+	CString strRead=_T("");
+	CString des=_T("");
+	::GetCurrentDirectory(MAX_PATH,des.GetBuffer(MAX_PATH));
+	des.ReleaseBuffer();
+	des+="\\config.ini";
+	int nCount=GetPrivateProfileInt(keyStr,_T("nCount"),0,des);
+	if (0==nCount)
+	{
+		MessageBox(_T("读取配置文件中的组分失败,请检查配置文件！"));
+		return;
+	}
+	else
+	{
+		TCHAR ch[10];
+		for (int i=1;i<=nCount;i++)
+		{
+			_itot_s(i,ch,_countof(ch),10);
+			GetPrivateProfileString(keyStr,ch,_T(""),strRead.GetBufferSetLength(10),10,des);
+			strRead.ReleaseBuffer();
+			vtStr.push_back(strRead);
+		}
+	}
+}
+
+
+bool StringSort(CString str1,CString str2)
+{
+	return str1<str2;
+}
+
+
+void CCompositionOptimizationDlg::InitMenu()
+{
+	//1.从配置文件中获取组成的所有种类
+	vector<CString> vtCString;
+	LoadStrFromIni(vtCString,_T("组成"));
+	//2.对组成进行排序
+	sort(vtCString.begin(),vtCString.end(),StringSort);
+	int m_cNumber=vtCString.size();
+
+	//3.组成菜单初始化
+	int comID=ID_COMPO_START;
+	m_CompositionMenu.CreatePopupMenu();
+	
+	CMenu MyMenuTemp;
+	MyMenuTemp.CreateMenu();
+
+	for (int i=0;i<m_cNumber;i++)
+	{
+		CMenu subMenu;
+		subMenu.CreateMenu();
+		CString theLetter=vtCString.at(i).Left(1);
+		do 
+		{
+			subMenu.AppendMenu(MF_STRING,comID++,vtCString.at(i));//添加组分 如 SiO2 Al2O3这种
+			i++;
+			if (i>=m_cNumber)
+			{
+				break;
+			}
+		} while ((theLetter==vtCString.at(i).Left(1)));
+		i--;
+		MyMenuTemp.AppendMenu(MF_POPUP,(UINT)subMenu.m_hMenu,theLetter);//添加子菜单，如A B C这种
+		subMenu.Detach();
+	}
+	m_CompositionMenu.AppendMenu(MF_POPUP,(UINT)MyMenuTemp.m_hMenu, _T("添加组成"));
+	MyMenuTemp.Detach();
+	m_DeleteCompID=comID;
+	m_CompositionMenu.AppendMenu(MF_STRING,comID,_T("删除组成"));
+
+
+	//性质菜单初始化
+	vtCString.clear();
+	LoadStrFromIni(vtCString,_T("性质"));
+	sort(vtCString.begin(),vtCString.end(),StringSort);
+	int m_nNumber=vtCString.size();
+	
+	int NatureID=ID_NATURE_START;
+
+	m_NatureMenu.CreatePopupMenu();
+	CMenu MyMenuTemp1;
+	MyMenuTemp1.CreateMenu();
+
+	for (int i=0;i<m_nNumber;i++)
+	{
+		CMenu subMenu1;
+		subMenu1.CreateMenu();
+		CString theLetter=vtCString.at(i).Left(1);
+		do 
+		{
+			subMenu1.AppendMenu(MF_STRING,NatureID++,vtCString.at(i));//添加组分 如 SiO2 Al2O3这种
+			i++;
+			if (i>=m_nNumber)
+			{
+				break;
+			}
+		} while ((theLetter==vtCString.at(i).Left(1)));
+		i--;
+		MyMenuTemp1.AppendMenu(MF_POPUP,(UINT)subMenu1.m_hMenu,theLetter);//添加子菜单，如A B C这种
+		subMenu1.Detach();
+	}
+	m_NatureMenu.AppendMenu(MF_POPUP,(UINT)MyMenuTemp1.m_hMenu, _T("添加性质"));
+	MyMenuTemp1.Detach();
+	m_DeleteNatureID=NatureID;
+	m_NatureMenu.AppendMenu(MF_STRING,NatureID,_T("删除性质"));
+
+}
+
+
 void CCompositionOptimizationDlg::Test()
 {
 	m_CompositionList.SetItemText(0,2,_T("7-8"));//
@@ -476,6 +583,7 @@ void CCompositionOptimizationDlg::Test()
 	m_NatureList.SetItemText(1,3,_T("取小值"));
 }
 
+
 void CCompositionOptimizationDlg::Clear()
 {
 	m_vtComposition.clear();
@@ -489,8 +597,6 @@ void CCompositionOptimizationDlg::RebuildList()
 	
 	RebuildCompositionList();
 	RebuildNatureList();
-	//1.重新生成计算系数列表
-	RebuildCalcRatioList();
 	//1.重新生成结果列表
 	InitResultList();
 }
@@ -518,6 +624,7 @@ void CCompositionOptimizationDlg::RebuildCompositionList()
 	m_compositionNumber=m_vtComposition.size();//最后更新数组大小
 }
 
+
 void CCompositionOptimizationDlg::RebuildNatureList()
 {
 
@@ -542,10 +649,6 @@ void CCompositionOptimizationDlg::RebuildNatureList()
 	m_natureNumber=m_vtNature.size();//最后更新数组大小
 }
 
-void CCompositionOptimizationDlg::RebuildCalcRatioList()
-{
-
-}
 
 void CCompositionOptimizationDlg::AutoSizeListColumn(CListCtrl &clist,int column)
 {
@@ -556,6 +659,7 @@ void CCompositionOptimizationDlg::AutoSizeListColumn(CListCtrl &clist,int column
 	clist.SetColumnWidth(column, max(nColumnWidth, nHeaderWidth));
 
 }
+
 
 void CCompositionOptimizationDlg::OnNMDblclkListComposition(NMHDR *pNMHDR, LRESULT *pResult)
 {
@@ -781,6 +885,7 @@ void CCompositionOptimizationDlg::AnalysisData()
 
 }
 
+
 void CCompositionOptimizationDlg::CStringToFloat(CString str,float &a,float &b,bool bNeedSort/*=true*/)
 {
 	int pos=str.Find('-');
@@ -799,6 +904,7 @@ void CCompositionOptimizationDlg::CStringToFloat(CString str,float &a,float &b,b
 		}
 	}
 }
+
 
 void CCompositionOptimizationDlg::GetCalcCOE()
 {
@@ -824,6 +930,7 @@ void CCompositionOptimizationDlg::GetCalcCOE()
 	m_map.clear();
 	
 }
+
 
 void CCompositionOptimizationDlg::CalculateNature()
 {
@@ -889,6 +996,7 @@ void CCompositionOptimizationDlg::CalculateNature()
 		m_mapResult.insert(make_pair(*vtCString,vtFloat));
 	}
 }
+
 
 void CCompositionOptimizationDlg::Calculate(map<int,vector<float>>::iterator itMap)
 {
@@ -1343,6 +1451,7 @@ void CCompositionOptimizationDlg::OnBnClickedBtnStartopt()
 	ClearData();//清除数据，为下次使用做准备
 }
 
+
 void CCompositionOptimizationDlg::OnBnClickedBtnTest()
 {
 	// TODO: 在此添加控件通知处理程序代码
@@ -1367,20 +1476,51 @@ void CCompositionOptimizationDlg::OnNMRClickListComposition(NMHDR *pNMHDR, LRESU
 	NM_LISTVIEW* pNMListView=(NM_LISTVIEW*)pNMHDR;
 	m_row=pNMListView->iItem;							//m_row为被选中行的行序号（int类型成员变量）
 	m_column=pNMListView->iSubItem;						//m_column为被选中行的列序号（int类型成员变量）
-	//防止在空白区点击弹出菜单  
-	//if (m_CompositionList.GetSelectedCount() <= 0)  
-	//{  
-	//	return;  
-	//}  
-	//下面的这段代码, 不单单适应于ListCtrl  
-	CMenu menu, *pPopup;  
-	menu.LoadMenu(IDR_MENU1);  
-	pPopup = menu.GetSubMenu(0);  
 	CPoint myPoint;  
 	ClientToScreen(&myPoint);  
 	GetCursorPos(&myPoint); //鼠标位置  
-	pPopup->TrackPopupMenu(TPM_LEFTALIGN|TPM_RIGHTBUTTON, myPoint.x, myPoint.y,this);
+	m_CompositionMenu.TrackPopupMenu(TPM_LEFTALIGN | TPM_LEFTBUTTON, myPoint.x, myPoint.y, this);
 	*pResult = 0;
+}
+
+//添加和删除组成
+void CCompositionOptimizationDlg::OnAddComposition(UINT nID)
+{
+	if (m_DeleteCompID!=nID)//如果菜单ID不为删除组成
+	{
+		CString str=_T("");
+		m_CompositionMenu.GetSubMenu(0)->GetMenuString(nID,str,MF_BYCOMMAND);
+		if (str!="")
+		{
+			vector<CString>::iterator itVt=find(m_vtComposition.begin(),m_vtComposition.end(),str);
+			if (itVt!=m_vtComposition.end())//如果与之前输入的组成不同，则加入，如相同则弹出对话框
+			{
+				MessageBox(_T("请输入与之前不同的组分！"));
+			}
+			else
+			{
+				m_vtComposition.push_back(str);
+				RebuildList();
+			}
+		}
+	}
+	else//删除组成
+	{
+		TCHAR ch[20]={};
+		m_CompositionList.GetItemText(m_row, 1,ch,20);//取得子项的内容
+		vector<CString>::iterator itVt=find(m_vtComposition.begin(),m_vtComposition.end(),ch);
+		if (itVt!=m_vtComposition.end())
+		{
+			CString str=_T("确认删除组成");
+			str.Format(_T("确认删除组成“%s”?"),ch);
+			if(IDYES==MessageBox(str,NULL,MB_YESNO))
+			{
+				m_vtComposition.erase(itVt);
+				RebuildList();
+			}
+		}
+	}
+	
 }
 
 
@@ -1388,146 +1528,54 @@ void CCompositionOptimizationDlg::OnNMRClickListNature(NMHDR *pNMHDR, LRESULT *p
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
-	NM_LISTVIEW* pNMListView=(NM_LISTVIEW*)pNMHDR;
-	m_row=pNMListView->iItem;							//m_row为被选中行的行序号（int类型成员变量）
-	m_column=pNMListView->iSubItem;						//m_column为被选中行的列序号（int类型成员变量）
-	//if (m_NatureList.GetSelectedCount() <= 0)  
-	//{  
-	//	return;  
-	//}  
-	//下面的这段代码, 不单单适应于ListCtrl  
-	CMenu menu, *pPopup;  
-	menu.LoadMenu(IDR_MENU2);  
-	pPopup = menu.GetSubMenu(0);  
 	CPoint myPoint;  
 	ClientToScreen(&myPoint);  
 	GetCursorPos(&myPoint); //鼠标位置  
-	pPopup->TrackPopupMenu(TPM_LEFTALIGN|TPM_RIGHTBUTTON, myPoint.x, myPoint.y,this);
+	m_NatureMenu.TrackPopupMenu(TPM_LEFTALIGN|TPM_RIGHTBUTTON, myPoint.x, myPoint.y,this);
 	*pResult = 0;
 }
 
-//添加组成
-//void CCompositionOptimizationDlg::OnAddcomposition()
-//{
-//	// TODO: 在此添加命令处理程序代码
-//	m_row=m_compositionNumber;
-//	m_column=1;
-//	CRect rc;
-//	m_CompositionList.GetSubItemRect(m_row, m_column,LVIR_LABEL,rc);//取得子项的矩形
-//	m_comRClickEdit.SetParent(&m_CompositionList);
-//	m_comRClickEdit.SetWindowText(_T(""));
-//	m_comRClickEdit.ShowWindow(SW_SHOW);					//显示编辑框
-//	m_comRClickEdit.MoveWindow(&rc);						//将编辑框移动到子项上面，覆盖在子项上
-//	m_comRClickEdit.SetFocus();							//使编辑框取得焦点
-//	m_comRClickEdit.CreateSolidCaret(1,rc.Height()-5);	//创建一个光标
-//	m_comRClickEdit.ShowCaret();							//显示光标
-//	m_comRClickEdit.SetSel(-1);							//使光标移到最后面
-//
-//	
-//}
 
-//删除组成
-void CCompositionOptimizationDlg::OnDeleteConposition()
+void CCompositionOptimizationDlg::OnAddNature(UINT nID)
 {
-	// TODO: 在此添加命令处理程序代码
-	TCHAR ch[20]={};
-	m_CompositionList.GetItemText(m_row, 1,ch,20);//取得子项的内容
-	vector<CString>::iterator itVt=find(m_vtComposition.begin(),m_vtComposition.end(),ch);
-	if (itVt!=m_vtComposition.end())
+	if (m_DeleteNatureID!=nID)//不是删除的菜单ID值,则进行添加
 	{
-		CString str=_T("确认删除组成");
-		str.Format(_T("确认删除组成“%s”?"),ch);
-		if(IDYES==MessageBox(str,NULL,MB_YESNO))
+		CString str=_T("");
+		m_NatureMenu.GetSubMenu(0)->GetMenuString(nID,str,MF_BYCOMMAND);
+		if (str!="")
 		{
-			m_vtComposition.erase(itVt);
-			RebuildList();
+			vector<CString>::iterator itVt=find(m_vtNature.begin(),m_vtNature.end(),str);
+			if (itVt!=m_vtNature.end())//如果与之前输入的组成不同，则加入，如相同则弹出对话框
+			{
+				MessageBox(_T("请输入与之前不同的性质！"));
+			}
+			else
+			{
+				m_vtNature.push_back(str);
+				RebuildList();
+			}
 		}
 	}
-}
-
-//添加性质
-//void CCompositionOptimizationDlg::OnAddNature()
-//{
-//	// TODO: 在此添加命令处理程序代码
-//	m_row=m_natureNumber;
-//	m_column=1;
-//	CRect rc;
-//	m_NatureList.GetSubItemRect(m_row, m_column,LVIR_LABEL,rc);//取得子项的矩形
-//	m_natureRClickEdit.SetParent(&m_NatureList);
-//	m_natureRClickEdit.SetWindowText(_T(""));
-//	m_natureRClickEdit.ShowWindow(SW_SHOW);					//显示编辑框
-//	m_natureRClickEdit.MoveWindow(&rc);						//将编辑框移动到子项上面，覆盖在子项上
-//	m_natureRClickEdit.SetFocus();							//使编辑框取得焦点
-//	m_natureRClickEdit.CreateSolidCaret(1,rc.Height()-5);	//创建一个光标
-//	m_natureRClickEdit.ShowCaret();							//显示光标
-//	m_natureRClickEdit.SetSel(-1);							//使光标移到最后面
-//}
-
-//删除性质
-void CCompositionOptimizationDlg::OnDeleteNature()
-{
-	// TODO: 在此添加命令处理程序代码
-	TCHAR ch[20]={};
-	m_NatureList.GetItemText(m_row, 1,ch,20);//取得子项的内容
-	vector<CString>::iterator itVt=find(m_vtNature.begin(),m_vtNature.end(),ch);
-	if (itVt!=m_vtNature.end())
+	else
 	{
-		CString str;
-		str.Format(_T("确认删除性质“%s?”"),ch);
-		if(IDYES==MessageBox(str,NULL,MB_YESNO))
+		TCHAR ch[20]={};
+		m_NatureList.GetItemText(m_row, 1,ch,20);//取得子项的内容
+		vector<CString>::iterator itVt=find(m_vtNature.begin(),m_vtNature.end(),ch);
+		if (itVt!=m_vtNature.end())
 		{
-			m_vtNature.erase(itVt);
-			RebuildList();
-		}
-		
-	}
-}
+			CString str;
+			str.Format(_T("确认删除性质“%s?”"),ch);
+			if(IDYES==MessageBox(str,NULL,MB_YESNO))
+			{
+				m_vtNature.erase(itVt);
+				RebuildList();
+			}
 
-//右键添加组成时，焦点消失后的响应函数
-void CCompositionOptimizationDlg::OnEnKillfocusEditComrclick()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	CString str;
-	m_comRClickEdit.GetWindowText(str);//取得编辑框的内容
-	m_comRClickEdit.ShowWindow(SW_HIDE);//隐藏编辑框
-	if (str!="")
-	{
-		vector<CString>::iterator itVt=find(m_vtComposition.begin(),m_vtComposition.end(),str);
-		if (itVt!=m_vtComposition.end())//如果与之前输入的组成不同，则加入，如相同则弹出对话框
-		{
-			MessageBox(_T("请输入与之前不同的组分！"));
 		}
-		else
-		{
-			m_vtComposition.push_back(str);
-			RebuildList();
-		}
-		
 	}
 	
 }
 
-//右键添加性质时，焦点消失后的响应函数
-void CCompositionOptimizationDlg::OnEnKillfocusEditNaturerclick()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	CString str;
-	m_natureRClickEdit.GetWindowText(str);//取得编辑框的内容
-	m_natureRClickEdit.ShowWindow(SW_HIDE);//隐藏编辑框
-	if (str!="")
-	{
-		vector<CString>::iterator itVt=find(m_vtNature.begin(),m_vtNature.end(),str);
-		if (itVt!=m_vtNature.end())//如果与之前输入的组成不同，则加入，如相同则弹出对话框
-		{
-			MessageBox(_T("请输入与之前不同的性质！"));
-		}
-		else
-		{
-			m_vtNature.push_back(str);
-			RebuildList();
-		}
-	}
-}
 
 //双击计算系数列表响应函数
 void CCompositionOptimizationDlg::OnNMDblclkListCalcratio(NMHDR *pNMHDR, LRESULT *pResult)
@@ -1579,41 +1627,3 @@ BOOL CCompositionOptimizationDlg::PreTranslateMessage(MSG* pMsg)
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
-
-void CCompositionOptimizationDlg::OnAddSio2()
-{
-	// TODO: 在此添加命令处理程序代码
-	//禁用此栏
-	//HMENU hMenu=::GetMenu((HWND)GetDlgItem(IDR_MENU1));
-	//EnableMenuItem(hMenu,ID_SIO2,MF_GRAYED);
-	CMenu mmenu;
-	mmenu.LoadMenu(IDR_MENU1);
-	//CMenu* submenu = mmenu.GetSubMenu(0);
-	mmenu.EnableMenuItem(ID_SIO2, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-	m_vtComposition.push_back(_T("SiO2"));
-	RebuildList();
-}
-
-
-void CCompositionOptimizationDlg::OnAddAl2o3()
-{
-	// TODO: 在此添加命令处理程序代码
-	m_vtComposition.push_back(_T("Al2O3"));
-	RebuildList();
-}
-
-
-void CCompositionOptimizationDlg::OnAddNa2o()
-{
-	// TODO: 在此添加命令处理程序代码
-	m_vtComposition.push_back(_T("Na2O"));
-	RebuildList();
-}
-
-
-void CCompositionOptimizationDlg::OnAddCao()
-{
-	// TODO: 在此添加命令处理程序代码
-	m_vtComposition.push_back(_T("CaO"));
-	RebuildList();
-}
