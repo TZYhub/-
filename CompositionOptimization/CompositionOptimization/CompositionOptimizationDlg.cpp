@@ -545,7 +545,7 @@ void CCompositionOptimizationDlg::InitMenu()
 		CString theLetter=vtCString.at(i).Left(1);
 		do 
 		{
-			subMenu1.AppendMenu(MF_STRING,NatureID++,vtCString.at(i));//添加组分 如 SiO2 Al2O3这种
+			subMenu1.AppendMenu(MF_STRING,NatureID++,vtCString.at(i));//
 			i++;
 			if (i>=m_nNumber)
 			{
@@ -553,7 +553,7 @@ void CCompositionOptimizationDlg::InitMenu()
 			}
 		} while ((theLetter==vtCString.at(i).Left(1)));
 		i--;
-		MyMenuTemp1.AppendMenu(MF_POPUP,(UINT)subMenu1.m_hMenu,theLetter);//添加子菜单，如A B C这种
+		MyMenuTemp1.AppendMenu(MF_POPUP,(UINT)subMenu1.m_hMenu,theLetter);//添加子菜单，
 		subMenu1.Detach();
 	}
 	m_NatureMenu.AppendMenu(MF_POPUP,(UINT)MyMenuTemp1.m_hMenu, _T("添加性质"));
