@@ -548,8 +548,6 @@ void CCompositionOptimizationDlg::InitMenu()
 		int subNumber = subCString.size();
 		for (int j = 0; j < subNumber; j++)
 		{
-			
-			
 			int a = subCString.at(j).Find(',');
 			int b = subCString.at(j).ReverseFind(',');
 			CString chName = subCString.at(j).Left(a);//1.取出逗号前的中文名
@@ -558,8 +556,7 @@ void CCompositionOptimizationDlg::InitMenu()
 			
 			subMenu1.AppendMenu(MF_STRING, NatureID++, chName);//把中文名添加到菜单
 			m_mapNatureCHtoEN.insert(make_pair(chName, enName));//添加到中英文对照的map中
-			//把取值信息添加进去
-
+			m_mapNatureChoiceValue.insert(make_pair(chName,choiceValue));//把取值信息添加进去
 		}
 		MyMenuTemp1.AppendMenu(MF_POPUP, (UINT)subMenu1.m_hMenu, vtCString.at(i));//添加子菜单，
 		subMenu1.Detach();

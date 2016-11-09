@@ -46,6 +46,7 @@ protected:
 	int m_natureNumber;								//需要比较的性质数目
 
 	map<CString,CString> m_mapNatureCHtoEN;			//性质的中文对应的英文字符
+	map<CString,CString> m_mapNatureChoiceValue;	//性质对应的取值，是取大值还是取小值
 
 
 	vector<SNature> m_vtCompareNatur;			//根据m_vtNature数据顺序存放的输入比较的数据
