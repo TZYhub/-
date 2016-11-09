@@ -45,6 +45,8 @@ protected:
 	vector<CString> m_vtNature;						//需要比较的性质数组的名字 如膨胀率 折射率等
 	int m_natureNumber;								//需要比较的性质数目
 
+	map<CString,CString> m_mapNatureCHtoEN;			//性质的中文对应的英文字符
+
 
 	vector<SNature> m_vtCompareNatur;			//根据m_vtNature数据顺序存放的输入比较的数据
 	//int 为与m_vtComposition中相同的顺序 如m_vtComposition中存放为SiO2 Al2O3 则0代表SiO2,1代表Al2O3
