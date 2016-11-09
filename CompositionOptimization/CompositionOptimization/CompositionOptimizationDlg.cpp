@@ -855,16 +855,18 @@ void CCompositionOptimizationDlg::AnalysisData()
 		vt.push_back(b);
 		snatur.NCompareValue = vt;
 
-		strGetFromList = m_NatureList.GetItemText(Item, 3);//判断取大值还是取小值
-		if (strGetFromList == _T("取大值"))
+		map<CString,CString>::iterator mapFindChoiceValue = m_mapNatureChoiceValue.find(*vtIt);
+		if (mapFindChoiceValue != m_mapNatureChoiceValue.end())
 		{
-			snatur.choiceValue = LargeValue;
+			if (mapFindChoiceValue->second == _T("取大值"))
+			{
+				snatur.choiceValue = LargeValue;
+			}
+			else if (mapFindChoiceValue->second == _T("取小值"))
+			{
+				snatur.choiceValue = SmallVaule;
+			}
 		}
-		else if (strGetFromList == _T("取小值"))
-		{
-			snatur.choiceValue = SmallVaule;
-		}
-		
 		m_vtCompareNatur.push_back(snatur);//把数据加入到数组中
 		Item++;
 	}
