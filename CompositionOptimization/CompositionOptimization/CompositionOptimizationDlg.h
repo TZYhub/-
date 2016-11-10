@@ -80,12 +80,10 @@ protected:
 	void Init();									//所有初始化
 	void LoadComposition();							//导入需要计算的组成物质到列表中
 	void LoadNature();								//导入需要比较的性质到列表中
-	void LoadResult();								//导入结果列表需要显示的数据
 	void LoadCalcRatio();							//导入计算系数
 	void InitCompositionList();						//初始化组成列表
 	void InitNatureList();							//初始化性质列表
 	void InitResultList();							//初始化结果列表
-	void InitCombo();								//初始化复选框
 	void InitCalcRatioList();						//初始化计算系数列表
 	void LoadStrFromIni(vector<CString> &vtStr,CString keyStr);	//从配置文件中获取字符串数据
 	void InitMenu();								//初始化弹出菜单
@@ -120,21 +118,18 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	CListCtrl m_CompositionList;
-	CListCtrl m_NatureList;
+	CListCtrl m_CompositionList;//组成列表
+	CListCtrl m_NatureList;//性质列表
 	CListCtrl m_CalcRatioList;//计算系数列表
-	CEdit m_inputComEdit;
-	CEdit m_inputNatureEdit;
-	CEdit m_calcRatioEdit;
-	CListCtrl m_ResultList;
-	CComboBox m_combo;//选择取大值还是取小值
+	CEdit m_inputComEdit;//输入组成编辑框
+	CEdit m_inputNatureEdit;//输入性质编辑框
+	CEdit m_calcRatioEdit;//输入计算系数编辑框
+	CListCtrl m_ResultList;//结果列表
 
 	afx_msg void OnNMDblclkListComposition(NMHDR *pNMHDR, LRESULT *pResult);//双击组成列表
 	afx_msg void OnNMDblclkListNature(NMHDR *pNMHDR, LRESULT *pResult);		//双击性质列表
-	afx_msg void OnNMClickListNature(NMHDR *pNMHDR, LRESULT *pResult);		//单击性质列表
 	afx_msg void OnEnKillfocusEdit1();						//添加组成范围编辑框焦点消失后
 	afx_msg void OnEnKillfocusEdit2();						//添加性质范围编辑框焦点消失后
-	afx_msg void OnCbnKillfocusCombo1();					//取大值和小值的combo焦点消失后
 
 	afx_msg void OnBnClickedBtnStartopt();					//开始优选按钮响应函数
 

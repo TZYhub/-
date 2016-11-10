@@ -63,7 +63,6 @@ void CCompositionOptimizationDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT1, m_inputComEdit);
 	DDX_Control(pDX, IDC_EDIT2, m_inputNatureEdit);
 	DDX_Control(pDX, IDC_LIST_RESULT, m_ResultList);
-	DDX_Control(pDX, IDC_COMBO1, m_combo);
 	DDX_Control(pDX, IDC_LIST_CALCRATIO, m_CalcRatioList);
 	DDX_Control(pDX, IDC_EDIT_CALCRTIO, m_calcRatioEdit);
 }
@@ -77,8 +76,6 @@ BEGIN_MESSAGE_MAP(CCompositionOptimizationDlg, CDialogEx)
 	ON_EN_KILLFOCUS(IDC_EDIT1, &CCompositionOptimizationDlg::OnEnKillfocusEdit1)
 	ON_EN_KILLFOCUS(IDC_EDIT2, &CCompositionOptimizationDlg::OnEnKillfocusEdit2)
 	ON_BN_CLICKED(IDC_BTN_STARTOPT, &CCompositionOptimizationDlg::OnBnClickedBtnStartopt)
-	ON_CBN_KILLFOCUS(IDC_COMBO1, &CCompositionOptimizationDlg::OnCbnKillfocusCombo1)
-	ON_NOTIFY(NM_CLICK, IDC_LIST_NATURE, &CCompositionOptimizationDlg::OnNMClickListNature)
 	ON_BN_CLICKED(IDC_BTN_TEST, &CCompositionOptimizationDlg::OnBnClickedBtnTest)
 	ON_BN_CLICKED(IDC_BTN_CLEAR, &CCompositionOptimizationDlg::OnBnClickedBtnClear)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST_COMPOSITION, &CCompositionOptimizationDlg::OnNMRClickListComposition)
@@ -184,7 +181,6 @@ void CCompositionOptimizationDlg::Init()
 	InitCompositionList();
 	InitNatureList();
 	InitResultList();
-	InitCombo();
 	InitCalcRatioList();
 	LoadCalcRatio();
 	
@@ -216,12 +212,6 @@ void CCompositionOptimizationDlg::LoadNature()
 	m_vtNature.push_back(str);
 
 	m_natureNumber = m_vtNature.size();
-}
-
-
-void CCompositionOptimizationDlg::LoadResult()
-{
-
 }
 
 
@@ -328,7 +318,6 @@ void CCompositionOptimizationDlg::InitNatureList()
 	m_NatureList.InsertColumn(0, _T("序号"), LVCFMT_CENTER, 40); 
 	m_NatureList.InsertColumn(1, _T("性    质"), LVCFMT_CENTER, 60); 
 	m_NatureList.InsertColumn(2, _T("性质范围"), LVCFMT_CENTER, 80);
-	m_NatureList.InsertColumn(3, _T("取大/小值"), LVCFMT_CENTER, 80);
 
 	//从一个数组里导入需要计算的组成物质
 	if (!m_vtNature.empty())//有数据
@@ -393,19 +382,6 @@ void CCompositionOptimizationDlg::InitResultList()
 }
 
 
-void CCompositionOptimizationDlg::InitCombo()
-{
-	if (m_bIsFirstInit)
-	{
-		m_combo.AddString(_T("取大值"));
-		m_combo.AddString(_T("取小值"));
-		m_combo.SetCurSel(0);
-		m_bIsFirstInit = false;
-	}
-	
-}
-
-
 void CCompositionOptimizationDlg::InitCalcRatioList()
 {
 	//删除行和列
@@ -449,7 +425,6 @@ void CCompositionOptimizationDlg::InitCalcRatioList()
 			m_CalcRatioList.InsertItem(pos, str); 
 		}
 	}
-	//AutoSizeListColumn(m_CalcRatioList,0);
 }
 
 
@@ -725,29 +700,6 @@ void CCompositionOptimizationDlg::OnNMDblclkListNature(NMHDR *pNMHDR, LRESULT *p
 	*pResult = 0;
 }
 
-//单击
-void CCompositionOptimizationDlg::OnNMClickListNature(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
-	// TODO: 在此添加控件通知处理程序代码
-	NM_LISTVIEW* pNMListView=(NM_LISTVIEW*)pNMHDR;
-	CRect rc;
-	if (pNMListView->iItem != -1 && pNMListView->iSubItem == 3)
-	{
-		m_row = pNMListView->iItem;						//m_row为被选中行的行序号（int类型成员变量）
-		m_column = pNMListView->iSubItem;					//m_column为被选中行的列序号（int类型成员变量）
-		m_NatureList.GetSubItemRect(pNMListView->iItem, pNMListView->iSubItem, LVIR_LABEL, rc);//取得子项的矩形
-
-		rc.bottom += 3;
-
-		m_combo.SetParent(&m_NatureList);
-		m_combo.ShowWindow(SW_SHOW);					//显示编辑框
-		m_combo.MoveWindow(&rc);						//将编辑框移动到子项上面，覆盖在子项上
-		m_combo.SetFocus();								//使编辑框取得焦点
-	}
-	*pResult = 0;
-}
-
 
 void CCompositionOptimizationDlg::OnEnKillfocusEdit1()
 {
@@ -768,17 +720,6 @@ void CCompositionOptimizationDlg::OnEnKillfocusEdit2()
 	m_inputNatureEdit.GetWindowText(str);//取得编辑框的内容
 	m_NatureList.SetItemText(m_row, m_column, str);//将该内容更新到CListCtrl中
 	m_inputNatureEdit.ShowWindow(SW_HIDE);//隐藏编辑框
-}
-
-
-void CCompositionOptimizationDlg::OnCbnKillfocusCombo1()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	//当焦点消失时，把选择的最值填充到表格中“取大值” 或“取小值”
-	CString str;
-	m_combo.GetWindowText(str);//取得编辑框的内容
-	m_NatureList.SetItemText(m_row, m_column, str);//将该内容更新到CListCtrl中
-	m_combo.ShowWindow(SW_HIDE);//隐藏编辑框
 }
 
 
@@ -858,11 +799,11 @@ void CCompositionOptimizationDlg::AnalysisData()
 		map<CString,CString>::iterator mapFindChoiceValue = m_mapNatureChoiceValue.find(*vtIt);
 		if (mapFindChoiceValue != m_mapNatureChoiceValue.end())
 		{
-			if (mapFindChoiceValue->second == _T("取大值"))
+			if (mapFindChoiceValue->second == _T("max"))
 			{
 				snatur.choiceValue = LargeValue;
 			}
-			else if (mapFindChoiceValue->second == _T("取小值"))
+			else if (mapFindChoiceValue->second == _T("min"))
 			{
 				snatur.choiceValue = SmallVaule;
 			}
@@ -886,9 +827,6 @@ void CCompositionOptimizationDlg::AnalysisData()
 		}
 		m_mapAllNature.insert(make_pair(i, mapCF));
 	}
-	
-	
-	
 
 }
 
@@ -1596,7 +1534,6 @@ void CCompositionOptimizationDlg::OnAddNature(UINT nID)
 		AutoSizeListColumn(m_ResultList, i);
 	}
 }
-
 
 //双击计算系数列表响应函数
 void CCompositionOptimizationDlg::OnNMDblclkListCalcratio(NMHDR *pNMHDR, LRESULT *pResult)
