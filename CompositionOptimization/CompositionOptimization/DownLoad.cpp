@@ -2,17 +2,6 @@
 ////
 //
 #include "stdafx.h"
-//#include "XZSQH.h"
-//#include "XinWuDlg.h"
-//#include "afxdialogex.h"
-//
-//
-//// CXinWuDlg 对话框
-//
-//IMPLEMENT_DYNAMIC(CXinWuDlg, CDialog)
-//
-//	CXinWuDlg::CXinWuDlg(CWnd* pParent /*=NULL*/)
-//	: CDialog(IDD_XinWuDlg, pParent)
 //	, Zu_Al(_T(""))
 //	, Zu_B(_T(""))
 //	, Zu_Ba(_T(""))
@@ -30,14 +19,6 @@
 //	, m_strZhi(_T(""))
 //	, m_strhoudu(_T(""))
 //	, Zu_Sr(_T(""))
-//{
-//
-//}
-//
-//CXinWuDlg::~CXinWuDlg()
-//{
-////}
-//
 //void CXinWuDlg::DoDataExchange(CDataExchange* pDX)
 //{
 //	CDialog::DoDataExchange(pDX);
@@ -95,32 +76,9 @@
 //	ON_EN_CHANGE(IDC_ZuLi, &CXinWuDlg::OnEnChangeZuli)
 //	ON_EN_CHANGE(IDC_ZuP, &CXinWuDlg::OnEnChangeZup)
 //	ON_EN_CHANGE(IDC_ZuSb, &CXinWuDlg::OnEnChangeZusb)
-//END_MESSAGE_MAP()
-//
-//
-//// CXinWuDlg 消息处理程序
-//
-//
-//BOOL CXinWuDlg::OnInitDialog()
-//{
-//	CDialog::OnInitDialog();
-//
-//
-//	return TRUE;  // return TRUE unless you set the focus to a control
-//	// 异常: OCX 属性页应返回 FALSE
-//}
-//BOOL CXinWuDlg::PreTranslateMessage(MSG* pMsg)
-//{
-//	// TODO: 在此添加专用代码和/或调用基类
-//	m_ToolTip.RelayEvent(pMsg);
-//
-//	return CDialog::PreTranslateMessage(pMsg);
-//}
-//
-//
-//
-//void CXinWuDlg::OnBnClickedHesuan()
-//{
+
+
+
 //	UpdateData();
 //	//Zu_Si,Zu_Al,Zu_Na,Zu_Na,Zu_Ca,Zu_B是编辑框输入数据的变量CString，也就是您代码中截段的组分数据
 //	//将截段的数据换算为摩尔分数

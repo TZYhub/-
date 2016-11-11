@@ -574,7 +574,6 @@ void CCompositionOptimizationDlg::Clear()
 //改变组成和性质时，计算系数列表以及结果列表都应该跟着变
 void CCompositionOptimizationDlg::RebuildList()
 {
-	
 	RebuildCompositionList();
 	RebuildNatureList();
 	//1.重新生成结果列表
@@ -637,7 +636,6 @@ void CCompositionOptimizationDlg::AutoSizeListColumn(CListCtrl &clist,int column
 	clist.SetColumnWidth(column, LVSCW_AUTOSIZE_USEHEADER);  
 	int nHeaderWidth = clist.GetColumnWidth(column);  
 	clist.SetColumnWidth(column, max(nColumnWidth, nHeaderWidth));
-
 }
 
 
@@ -848,32 +846,6 @@ void CCompositionOptimizationDlg::CStringToFloat(CString str, float &a, float &b
 			b = t;
 		}
 	}
-}
-
-
-void CCompositionOptimizationDlg::GetCalcCOE()
-{
-	map<CString,float> m_map;
-	m_map.insert(make_pair("膨胀系数", (float)35.0));
-	m_map.insert(make_pair("折射率", (float)1.46));
-	m_mapAllNature.insert(make_pair(0, m_map));
-	m_map.clear();
-
-	m_map.insert(make_pair("膨胀系数", (float)-40.0));
-	m_map.insert(make_pair("折射率", (float)1.52));
-	m_mapAllNature.insert(make_pair(1, m_map));
-	m_map.clear();
-
-	m_map.insert(make_pair("膨胀系数", (float)130.0));
-	m_map.insert(make_pair("折射率", (float)1.73));
-	m_mapAllNature.insert(make_pair(2, m_map));
-	m_map.clear();
-
-	m_map.insert(make_pair("膨胀系数", (float)300.0));
-	m_map.insert(make_pair("折射率", (float)1.59));
-	m_mapAllNature.insert(make_pair(3, m_map));
-	m_map.clear();
-	
 }
 
 
@@ -1352,7 +1324,6 @@ void CCompositionOptimizationDlg::OnBnClickedBtnStartopt()
 	//一、解析输入的组分数据，做出截断处理
 	AnalysisData();
 	//二、获取膨胀系数、折射率等。。。
-	//GetCalcCOE();//获取计算系数
 	//三、开始计算
 	CalculateNature();
 	

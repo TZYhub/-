@@ -98,7 +98,6 @@ protected:
 
 	void AnalysisData();							//分析数据，把数据填充至对应变量中
 	void CStringToFloat(CString str,float &a,float &b,bool bNeedSort=true);//字符串解析为浮点 如“1-2”，a=1.0,b=2.0;
-	void GetCalcCOE();								//获取计算系数，如膨胀系数、折射率等。。。
 	void CalculateNature();							//计算各组的性质
 	void Calculate(map<int,vector<float>>::iterator itMap);
 
