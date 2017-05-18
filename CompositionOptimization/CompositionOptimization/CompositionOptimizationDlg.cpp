@@ -810,7 +810,7 @@ void CCompositionOptimizationDlg::AnalysisData()
 		Item++;
 	}
 
-	//从系数列表中获取计算系数
+	//从系数列表中获取性质计算系数
 	int compositionNumber = m_vtComposition.size();
 	map<CString,float> mapCF;
 	float fValue = 0;
